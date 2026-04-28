@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TREND — Style Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&family=Orbitron:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1 class="site-title site-title--floating">TREND</h1>
+
+  <section class="event-countdown" id="show-countdown" aria-live="polite" aria-label="Fashion show countdown">
+    <p class="event-countdown__kicker">FASHION SHOW LAUNCH</p>
+    <div class="event-countdown__grid">
+      <div class="event-countdown__unit">
+        <span class="event-countdown__num" id="countdown-days">--</span>
+        <span class="event-countdown__label">Days</span>
+      </div>
+      <span class="event-countdown__sep" aria-hidden="true">:</span>
+      <div class="event-countdown__unit">
+        <span class="event-countdown__num" id="countdown-hours">--</span>
+        <span class="event-countdown__label">Hours</span>
+      </div>
+      <span class="event-countdown__sep" aria-hidden="true">:</span>
+      <div class="event-countdown__unit">
+        <span class="event-countdown__num" id="countdown-minutes">--</span>
+        <span class="event-countdown__label">Minutes</span>
+      </div>
+      <span class="event-countdown__sep" aria-hidden="true">:</span>
+      <div class="event-countdown__unit">
+        <span class="event-countdown__num" id="countdown-seconds">--</span>
+        <span class="event-countdown__label">Seconds</span>
+      </div>
+    </div>
+    <p class="event-countdown__live" id="countdown-live">THE SHOW IS LIVE</p>
+  </section>
+
+  <div class="game-container">
+    <div class="editorial-title-wrap">
+      <h2 class="editorial-title">DRESS UP</h2>
+      <span class="doodle-star doodle-star--left" aria-hidden="true">✶</span>
+      <span class="doodle-star doodle-star--right" aria-hidden="true">✶</span>
+    </div>
+
+    <aside class="model-board" aria-label="Model board">
+      <div class="character-stage" id="character-stage">
+        <div class="model-placeholder" aria-hidden="true"></div>
+      </div>
+      <p class="drop-cue">Drop to style</p>
+    </aside>
+
+    <!-- ── Wardrobe ── -->
+    <div class="wardrobe">
+
+      <!-- Headwear -->
+      <div class="category">
+        <p class="category-label">Headwear</p>
+        <div class="items">
+
+          <div class="item" draggable="true" data-slot="hat" data-id="hat-beret">
+            <svg width="72" height="52" viewBox="0 0 72 52">
+              <ellipse cx="36" cy="44" rx="32" ry="8" fill="#c9c0d3"/>
+              <ellipse cx="36" cy="28" rx="28" ry="20" fill="#b8afc8"/>
+              <ellipse cx="36" cy="22" rx="20" ry="14" fill="#c9c0d3"/>
+              <circle cx="50" cy="16" r="4" fill="#b8afc8"/>
+            </svg>
+            <span class="item-name">Beret</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="hat" data-id="hat-bucket">
+            <svg width="72" height="52" viewBox="0 0 72 52">
+              <ellipse cx="36" cy="44" rx="34" ry="7" fill="#c4a882"/>
+              <path d="M8,42 L14,18 Q36,12 58,18 L64,42 Z" fill="#d4b892"/>
+              <ellipse cx="36" cy="18" rx="22" ry="7" fill="#c4a882"/>
+            </svg>
+            <span class="item-name">Bucket Hat</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="hat" data-id="hat-cap">
+            <svg width="72" height="48" viewBox="0 0 72 48">
+              <ellipse cx="36" cy="40" rx="30" ry="7" fill="#1c1c1e"/>
+              <path d="M8,38 Q8,16 36,14 Q64,16 64,38" fill="#2d2d2d"/>
+              <rect x="4" y="34" width="36" height="8" rx="4" fill="#1c1c1e"/>
+            </svg>
+            <span class="item-name">Cap</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="hat" data-id="hat-cowboy">
+            <svg width="72" height="52" viewBox="0 0 72 52">
+              <ellipse cx="36" cy="44" rx="34" ry="7" fill="#8a7560"/>
+              <path d="M4,42 Q4,38 12,36 L18,16 Q36,10 54,16 L60,36 Q68,38 68,42 Z" fill="#9a8570"/>
+              <ellipse cx="36" cy="16" rx="18" ry="7" fill="#8a7560"/>
+              <path d="M4,40 Q20,32 36,34 Q52,32 68,40" fill="none" stroke="#7a6550" stroke-width="2"/>
+            </svg>
+            <span class="item-name">Cowboy Hat</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tops -->
+      <div class="category">
+        <p class="category-label">Tops</p>
+        <div class="items">
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-corset">
+            <svg width="72" height="64" viewBox="0 0 72 64">
+              <path d="M16,4 Q36,10 56,4 L62,28 L56,32 L56,60 L16,60 L16,32 L10,28 Z" fill="#1c1c1e"/>
+              <line x1="36" y1="4" x2="36" y2="60" stroke="#3a3a3c" stroke-width="1.5"/>
+              <line x1="26" y1="14" x2="46" y2="14" stroke="#3a3a3c" stroke-width="1"/>
+              <line x1="24" y1="24" x2="48" y2="24" stroke="#3a3a3c" stroke-width="1"/>
+              <line x1="22" y1="34" x2="50" y2="34" stroke="#3a3a3c" stroke-width="1"/>
+              <line x1="22" y1="44" x2="50" y2="44" stroke="#3a3a3c" stroke-width="1"/>
+              <path d="M16,4 Q36,12 56,4" fill="none" stroke="#555" stroke-width="1.5"/>
+            </svg>
+            <span class="item-name">Corset Top</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-oversized">
+            <svg width="72" height="68" viewBox="0 0 72 68">
+              <path d="M10,8 L0,28 L14,32 L14,64 L58,64 L58,32 L72,28 L62,8 L46,16 Q36,20 26,16 Z" fill="#e8c4bc"/>
+              <path d="M26,16 Q36,22 46,16" fill="none" stroke="#d4a898" stroke-width="1.5"/>
+              <path d="M14,32 L14,64" stroke="#d4a898" stroke-width="0.5" stroke-dasharray="3,3"/>
+            </svg>
+            <span class="item-name">Oversized Tee</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-blazer">
+            <svg width="72" height="68" viewBox="0 0 72 68">
+              <path d="M10,8 L0,28 L14,32 L14,64 L58,64 L58,32 L72,28 L62,8 L46,16 Q36,20 26,16 Z" fill="#c4a882"/>
+              <line x1="36" y1="18" x2="36" y2="64" stroke="#b09070" stroke-width="2"/>
+              <path d="M26,16 L22,64" fill="none" stroke="#b09070" stroke-width="1"/>
+              <path d="M46,16 L50,64" fill="none" stroke="#b09070" stroke-width="1"/>
+              <rect x="16" y="36" width="10" height="7" rx="1" fill="#b09070"/>
+              <rect x="16" y="48" width="10" height="7" rx="1" fill="#b09070"/>
+              <path d="M26,16 Q36,22 46,16" fill="none" stroke="#b09070" stroke-width="1.5"/>
+            </svg>
+            <span class="item-name">Blazer</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-crop">
+            <svg width="72" height="52" viewBox="0 0 72 52">
+              <path d="M12,6 L2,22 L16,26 L16,48 L56,48 L56,26 L70,22 L60,6 L44,14 Q36,18 28,14 Z" fill="#b8c4b8"/>
+              <path d="M28,14 Q36,20 44,14" fill="none" stroke="#a0b0a0" stroke-width="1.5"/>
+            </svg>
+            <span class="item-name">Crop Top</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-slip">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <path d="M20,4 L16,8 L16,68 L56,68 L56,8 L52,4 Z" fill="#e8ddd0"/>
+              <path d="M20,4 Q36,2 52,4" fill="none" stroke="#d4c8b8" stroke-width="1.5"/>
+              <line x1="20" y1="4" x2="16" y2="8" stroke="#d4c8b8" stroke-width="1.5"/>
+              <line x1="52" y1="4" x2="56" y2="8" stroke="#d4c8b8" stroke-width="1.5"/>
+              <path d="M16,68 Q36,64 56,68" fill="none" stroke="#d4c8b8" stroke-width="1.5"/>
+            </svg>
+            <span class="item-name">Slip Dress</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-knit">
+            <svg width="72" height="64" viewBox="0 0 72 64">
+              <path d="M12,8 L2,26 L16,30 L16,60 L56,60 L56,30 L70,26 L60,8 L44,16 Q36,20 28,16 Z" fill="#c9c0d3"/>
+              <path d="M28,16 Q36,22 44,16" fill="none" stroke="#b8afc8" stroke-width="2"/>
+              <path d="M16,30 Q36,26 56,30" fill="none" stroke="#b8afc8" stroke-width="1" stroke-dasharray="4,3"/>
+              <path d="M16,40 Q36,36 56,40" fill="none" stroke="#b8afc8" stroke-width="1" stroke-dasharray="4,3"/>
+              <path d="M16,50 Q36,46 56,50" fill="none" stroke="#b8afc8" stroke-width="1" stroke-dasharray="4,3"/>
+            </svg>
+            <span class="item-name">Knit Sweater</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="top" data-id="top-crop-tee" data-png="crop-top-transparent-image-free-png.png">
+            <img src="crop-top-transparent-image-free-png.png" class="item-thumb" alt="Crop Tee" />
+            <span class="item-name">Crop Tee</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottoms -->
+      <div class="category">
+        <p class="category-label">Bottoms</p>
+        <div class="items">
+
+          <div class="item" draggable="true" data-slot="bottom" data-id="bottom-miniskirt">
+            <svg width="72" height="44" viewBox="0 0 72 44">
+              <path d="M14,2 L58,2 L64,40 L8,40 Z" fill="#1c1c1e"/>
+              <rect x="12" y="0" width="48" height="8" rx="2" fill="#2d2d2d"/>
+              <line x1="28" y1="8" x2="14" y2="40" stroke="#3a3a3c" stroke-width="1"/>
+              <line x1="36" y1="8" x2="36" y2="40" stroke="#3a3a3c" stroke-width="1"/>
+              <line x1="44" y1="8" x2="58" y2="40" stroke="#3a3a3c" stroke-width="1"/>
+            </svg>
+            <span class="item-name">Mini Skirt</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="bottom" data-id="bottom-cargo">
+            <svg width="72" height="68" viewBox="0 0 72 68">
+              <path d="M14,2 L12,52 Q12,64 24,64 L32,64 L36,44 L40,64 L48,64 Q60,64 60,52 L58,2 Z" fill="#8a8580"/>
+              <line x1="36" y1="2" x2="36" y2="44" stroke="#7a7570" stroke-width="2"/>
+              <rect x="14" y="2" width="44" height="10" rx="2" fill="#7a7570"/>
+              <rect x="10" y="28" width="14" height="12" rx="2" fill="#7a7570"/>
+              <rect x="48" y="28" width="14" height="12" rx="2" fill="#7a7570"/>
+              <rect x="28" y="4" width="16" height="6" rx="1" fill="#c4a882"/>
+            </svg>
+            <span class="item-name">Cargo Pants</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="bottom" data-id="bottom-trousers">
+            <svg width="72" height="68" viewBox="0 0 72 68">
+              <path d="M14,2 L12,52 Q12,64 24,64 L32,64 L36,44 L40,64 L48,64 Q60,64 60,52 L58,2 Z" fill="#c4a882"/>
+              <line x1="36" y1="2" x2="36" y2="44" stroke="#b09070" stroke-width="1.5"/>
+              <rect x="14" y="2" width="44" height="8" rx="2" fill="#b09070"/>
+              <line x1="22" y1="10" x2="16" y2="64" stroke="#b09070" stroke-width="0.8"/>
+              <line x1="50" y1="10" x2="56" y2="64" stroke="#b09070" stroke-width="0.8"/>
+            </svg>
+            <span class="item-name">Trousers</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="bottom" data-id="bottom-midi">
+            <svg width="72" height="60" viewBox="0 0 72 60">
+              <path d="M16,2 L56,2 L66,56 L6,56 Z" fill="#e8c4bc"/>
+              <rect x="14" y="0" width="44" height="8" rx="2" fill="#d4a898"/>
+              <path d="M6,56 Q36,50 66,56" fill="none" stroke="#d4a898" stroke-width="2"/>
+              <path d="M10,30 Q36,24 62,30" fill="none" stroke="#d4a898" stroke-width="1" stroke-dasharray="5,4"/>
+            </svg>
+            <span class="item-name">Midi Skirt</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="bottom" data-id="bottom-shorts">
+            <svg width="72" height="44" viewBox="0 0 72 44">
+              <path d="M14,2 L12,30 Q12,42 24,42 L32,42 L36,28 L40,42 L48,42 Q60,42 60,30 L58,2 Z" fill="#c9c0d3"/>
+              <line x1="36" y1="2" x2="36" y2="28" stroke="#b8afc8" stroke-width="2"/>
+              <rect x="14" y="2" width="44" height="8" rx="2" fill="#b8afc8"/>
+            </svg>
+            <span class="item-name">Shorts</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Shoes -->
+      <div class="category">
+        <p class="category-label">Shoes</p>
+        <div class="items">
+
+          <div class="item" draggable="true" data-slot="shoes" data-id="shoes-boots-knee">
+            <svg width="72" height="60" viewBox="0 0 72 60">
+              <rect x="8" y="4" width="20" height="44" rx="4" fill="#1c1c1e"/>
+              <path d="M8,42 Q8,56 24,56 L40,56 Q40,48 24,48 L24,4" fill="#1c1c1e"/>
+              <rect x="8" y="2" width="20" height="6" rx="2" fill="#2d2d2d"/>
+              <rect x="44" y="4" width="20" height="44" rx="4" fill="#1c1c1e"/>
+              <path d="M44,42 Q44,56 60,56 L72,56 Q72,48 60,48 L60,4" fill="#1c1c1e"/>
+              <rect x="44" y="2" width="20" height="6" rx="2" fill="#2d2d2d"/>
+            </svg>
+            <span class="item-name">Knee Boots</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="shoes" data-id="shoes-mules">
+            <svg width="72" height="40" viewBox="0 0 72 40">
+              <path d="M4,30 Q4,18 18,16 L36,16 Q46,16 48,26 L48,34 Q30,38 4,32 Z" fill="#c4a882"/>
+              <rect x="42" y="28" width="5" height="14" rx="2" fill="#b09070"/>
+              <path d="M36,16 Q44,8 52,14" fill="none" stroke="#b09070" stroke-width="2"/>
+              <path d="M44,30 Q56,18 64,16 L66,20 Q58,22 50,32" fill="#c4a882"/>
+            </svg>
+            <span class="item-name">Mule Heels</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="shoes" data-id="shoes-sneakers">
+            <svg width="72" height="36" viewBox="0 0 72 36">
+              <ellipse cx="20" cy="30" rx="18" ry="6" fill="#e8ddd0"/>
+              <path d="M4,28 Q4,16 14,14 L28,14 L32,22 L40,14 L46,14 Q52,14 52,22 L52,28 Q36,32 4,30 Z" fill="#e8ddd0"/>
+              <path d="M14,14 L28,14 L32,22" fill="none" stroke="#c4a882" stroke-width="1.5"/>
+              <ellipse cx="52" cy="30" rx="18" ry="6" fill="#e8ddd0"/>
+              <path d="M36,28 Q36,16 46,14 L60,14 L64,22 L70,14 L72,14 Q72,22 72,28 Q56,32 36,30 Z" fill="#e8ddd0"/>
+              <path d="M46,14 L60,14 L64,22" fill="none" stroke="#c4a882" stroke-width="1.5"/>
+            </svg>
+            <span class="item-name">Sneakers</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="shoes" data-id="shoes-loafers">
+            <svg width="72" height="36" viewBox="0 0 72 36">
+              <path d="M4,28 Q4,16 18,14 L36,14 Q46,14 48,22 L48,30 Q28,34 4,30 Z" fill="#8a7560"/>
+              <path d="M18,14 Q28,10 36,14" fill="none" stroke="#6a5540" stroke-width="2"/>
+              <rect x="20" y="14" width="16" height="6" rx="2" fill="#6a5540"/>
+              <path d="M44,28 Q44,16 58,14 L72,14 Q72,22 72,30 Q56,34 44,30 Z" fill="#8a7560"/>
+              <path d="M58,14 Q66,10 72,14" fill="none" stroke="#6a5540" stroke-width="2"/>
+              <rect x="56" y="14" width="14" height="6" rx="2" fill="#6a5540"/>
+            </svg>
+            <span class="item-name">Loafers</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Accessories -->
+      <div class="category">
+        <p class="category-label">Accessories</p>
+        <div class="items">
+
+          <div class="item" draggable="true" data-slot="accessory" data-id="acc-sunglasses">
+            <svg width="72" height="32" viewBox="0 0 72 32">
+              <rect x="4" y="10" width="26" height="16" rx="8" fill="#1c1c1e"/>
+              <rect x="42" y="10" width="26" height="16" rx="8" fill="#1c1c1e"/>
+              <line x1="30" y1="18" x2="42" y2="18" stroke="#1c1c1e" stroke-width="3"/>
+              <line x1="0" y1="14" x2="4" y2="18" stroke="#1c1c1e" stroke-width="2.5"/>
+              <line x1="72" y1="14" x2="68" y2="18" stroke="#1c1c1e" stroke-width="2.5"/>
+              <rect x="4" y="10" width="26" height="16" rx="8" fill="rgba(0,0,0,0.55)"/>
+              <rect x="42" y="10" width="26" height="16" rx="8" fill="rgba(0,0,0,0.55)"/>
+            </svg>
+            <span class="item-name">Sunglasses</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="accessory" data-id="acc-shoulder-bag">
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <rect x="10" y="22" width="40" height="34" rx="5" fill="#c4a882"/>
+              <path d="M22,22 Q22,10 30,10 Q38,10 38,22" fill="none" stroke="#b09070" stroke-width="3"/>
+              <rect x="24" y="34" width="12" height="10" rx="2" fill="#b09070"/>
+              <circle cx="30" cy="39" r="3" fill="#c4a882"/>
+              <line x1="10" y1="22" x2="2" y2="10" stroke="#b09070" stroke-width="2"/>
+            </svg>
+            <span class="item-name">Shoulder Bag</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="accessory" data-id="acc-chain">
+            <svg width="72" height="32" viewBox="0 0 72 32">
+              <path d="M8,8 Q36,28 64,8" fill="none" stroke="#c4a882" stroke-width="3"/>
+              <circle cx="36" cy="26" r="6" fill="#c4a882"/>
+              <circle cx="36" cy="26" r="3" fill="#e8ddd0"/>
+              <circle cx="20" cy="18" r="2" fill="#c4a882"/>
+              <circle cx="52" cy="18" r="2" fill="#c4a882"/>
+            </svg>
+            <span class="item-name">Gold Chain</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="accessory" data-id="acc-scarf">
+            <svg width="72" height="36" viewBox="0 0 72 36">
+              <path d="M8,12 Q28,6 36,18 Q44,30 64,24" fill="none" stroke="#e8c4bc" stroke-width="12" stroke-linecap="round"/>
+              <path d="M8,12 Q28,6 36,18 Q44,30 64,24" fill="none" stroke="#d4a898" stroke-width="2" stroke-dasharray="5,4"/>
+              <path d="M60,22 L68,32 L64,30 L66,36" stroke="#e8c4bc" stroke-width="8" stroke-linecap="round" fill="none"/>
+            </svg>
+            <span class="item-name">Silk Scarf</span>
+          </div>
+
+          <div class="item" draggable="true" data-slot="accessory" data-id="acc-belt">
+            <svg width="72" height="24" viewBox="0 0 72 24">
+              <rect x="2" y="8" width="68" height="8" rx="4" fill="#1c1c1e"/>
+              <rect x="30" y="6" width="12" height="12" rx="2" fill="#c4a882"/>
+              <rect x="33" y="9" width="6" height="6" rx="1" fill="#1c1c1e"/>
+            </svg>
+            <span class="item-name">Leather Belt</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end .wardrobe -->
+
+    <div class="controls">
+      <button class="btn" onclick="resetAll()">Clear</button>
+      <button class="btn btn-primary" onclick="randomize()">Randomize</button>
+    </div>
+
+  </div><!-- end .game-container -->
+
+  <div id="drag-ghost" aria-hidden="true"></div>
+  <script src="js/header-countdown.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
