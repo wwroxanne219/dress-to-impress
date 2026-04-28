@@ -123,21 +123,27 @@ document.querySelectorAll('.item').forEach(item => {
     dragData = { slot: item.dataset.slot, id: item.dataset.id };
 
     const thumb = item.querySelector('.item-thumb');
-    const svg   = item.querySelector('svg');
-    const label = item.querySelector('.item-name').textContent;
-    ghost.innerHTML = (thumb
-      ? `<img src="${thumb.src}" style="width:72px;height:64px;object-fit:contain;">`
-      : svg ? svg.outerHTML : ''
-    ) + `<span>${label}</span>`;
-    ghost.style.display = 'flex';
-    e.dataTransfer.setDragImage(ghost, ghost.offsetWidth / 2, ghost.offsetHeight / 2);
+    const svg = item.querySelector('svg');
+    const nameEl = item.querySelector('.item-name');
+    const label = nameEl ? nameEl.textContent : '';
+
+    if (ghost) {
+      ghost.innerHTML = (thumb
+        ? `<img src="${thumb.src}" alt="" style="width:72px;height:64px;object-fit:contain;">`
+        : svg ? svg.outerHTML : ''
+      ) + `<span>${label}</span>`;
+      ghost.style.display = 'flex';
+      if (ghost.offsetWidth && ghost.offsetHeight) {
+        e.dataTransfer.setDragImage(ghost, ghost.offsetWidth / 2, ghost.offsetHeight / 2);
+      }
+    }
     e.dataTransfer.effectAllowed = 'copy';
     requestAnimationFrame(() => item.classList.add('dragging'));
   });
 
   item.addEventListener('dragend', () => {
     item.classList.remove('dragging');
-    ghost.style.display = 'none';
+    if (ghost) ghost.style.display = 'none';
     dragData = null;
     if (stage) stage.classList.remove('drag-over');
   });
@@ -166,3 +172,7 @@ if (stage) {
     setTimeout(() => stage.classList.remove('drop-flash'), 400);
   });
 }
+
+(function initDressUp() {
+  resetAll();
+})();

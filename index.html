@@ -48,7 +48,37 @@
 
     <aside class="model-board" aria-label="Model board">
       <div class="character-stage" id="character-stage">
-        <div class="model-placeholder" aria-hidden="true"></div>
+        <div class="doll-wrap" id="dress-doll-root">
+          <svg class="body-svg" viewBox="0 0 260 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dress-up figure">
+            <defs>
+              <linearGradient id="clothG" gradientUnits="userSpaceOnUse" x1="130" y1="180" x2="130" y2="480">
+                <stop offset="0%" stop-color="#393633"/>
+                <stop offset="100%" stop-color="#2a2825"/>
+              </linearGradient>
+              <linearGradient id="clothB" gradientUnits="userSpaceOnUse" x1="130" y1="280" x2="130" y2="310">
+                <stop offset="0%" stop-color="#47433f"/>
+                <stop offset="100%" stop-color="#383530"/>
+              </linearGradient>
+              <linearGradient id="skinG" gradientUnits="userSpaceOnUse" x1="130" y1="40" x2="130" y2="220">
+                <stop offset="0%" stop-color="#efe0d4"/>
+                <stop offset="100%" stop-color="#e4cbbb"/>
+              </linearGradient>
+            </defs>
+            <g id="base-skin" fill="url(#skinG)" stroke="#caa896" stroke-width="1">
+              <ellipse cx="130" cy="108" rx="48" ry="60"/>
+              <path d="M94 164 Q130 176 174 164 L174 206 Q130 220 92 206 Z" stroke="none"/>
+              <path d="M94 206 Q76 296 74 472 L176 472 Q174 296 174 206 Q140 226 118 226 Q96 226 94 206 Z" opacity="0.98"/>
+              <ellipse cx="86" cy="214" rx="22" ry="88" opacity="0.98"/>
+              <ellipse cx="174" cy="214" rx="22" ry="88" opacity="0.98"/>
+            </g>
+            <g id="layer-shoes-svg"></g>
+            <g id="layer-bottom-svg"></g>
+            <g id="layer-top-svg"></g>
+            <g id="layer-accessory-svg"></g>
+            <g id="layer-hat-svg"></g>
+          </svg>
+          <div class="png-layer png-layer--top" id="layer-top-png" aria-hidden="true"></div>
+        </div>
       </div>
       <p class="drop-cue">Drop to style</p>
     </aside>
