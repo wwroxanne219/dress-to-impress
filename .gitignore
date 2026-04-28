@@ -1,3 +1,6 @@
 .DS_Store
 .venv/
 .vscode/
+
+# Nested copy / duplicate checkout (nested .git)
+dress up game/
