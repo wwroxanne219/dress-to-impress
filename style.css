@@ -322,7 +322,7 @@ body {
     inset 0 -1px 0 rgba(0,0,0,0.4);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Ambient light from top */
@@ -400,7 +400,10 @@ body {
   height: 520px;
   flex-shrink: 0;
   z-index: 1;
+  overflow: visible;
   filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+  transform-origin: 50% 92%;
+  animation: model-breathe 5s ease-in-out infinite;
 }
 
 .body-svg {
@@ -408,28 +411,50 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
 }
 
-.png-layer {
+/* Sticker layer: full doll board rect, unconstrained — no clip (photo clipping stays SVG-only below) */
+.placed-clothing-overlay {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+  background: transparent;
+}
+
+.placed-drag-item {
+  position: absolute;
+  box-sizing: border-box;
+  pointer-events: auto;
+  cursor: grab;
+  background: transparent;
+  touch-action: none;
+}
+
+.placed-drag-item:active {
+  cursor: grabbing;
+}
+
+.placed-drag-item svg {
+  display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
+}
+
+.placed-drag-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Bottoms: scaled clone on board only; thumbnail in panel unchanged */
+.placed-drag-item--bottom .placed-drag-item-scale {
   pointer-events: none;
 }
-
-.png-layer img {
-  position: absolute;
-  object-fit: contain;
-  transition: opacity 0.3s ease;
-}
-
-.png-layer--top img       { left: 4%;  top: 33%; width: 92%; }
-.png-layer--bottom img    { left: 10%; top: 56%; width: 80%; }
-.png-layer--shoes img     { left: 5%;  top: 86%; width: 90%; }
-.png-layer--hat img       { left: 10%; top: 2%;  width: 80%; }
-.png-layer--accessory img { left: 0%;  top: 28%; width: 100%; }
 
 /* ── Controls ── */
 
@@ -711,6 +736,7 @@ body {
   .character-stage {
     max-width: 330px;
     width: 100%;
+    overflow: visible;
   }
 
   .drop-cue { display: none; }
@@ -741,12 +767,8 @@ body {
 /* ── Model idle animation — very subtle breathing ── */
 
 @keyframes model-breathe {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-3px); }
-}
-
-.doll-wrap {
-  animation: model-breathe 5s ease-in-out infinite;
+  0%, 100% { transform: translateY(0) scale(1.05); }
+  50%       { transform: translateY(-3px) scale(1.05); }
 }
 
 /* ── Final Editorial Collage Theme ── */
@@ -917,8 +939,9 @@ body {
   border-radius: 8px;
   background: rgba(12,12,12,0.5);
   box-shadow: 0 20px 40px rgba(0,0,0,0.45);
-  padding: 20px 18px 10px;
+  padding: 24px 28px 20px;
   min-height: 620px;
+  overflow: visible;
 }
 
 .character-stage::before,

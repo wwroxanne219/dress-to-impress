@@ -1,9 +1,5 @@
-// ── Outfit state ──────────────────────────────────────────────
-const outfit = { hat: null, top: null, bottom: null, shoes: null, accessory: null };
-
-// ── Item registry ─────────────────────────────────────────────
-// type 'svg' → renders SVG markup into the <g> layer inside the body SVG
-// type 'png' → renders an <img> into the absolutely-positioned div layer
+// ── Item registry (visual defs for thumbnails / cloning) ───
+// Drops are positioned manually — no slot alignment or auto placement.
 const items = {
 
   // HATS
@@ -41,89 +37,136 @@ const items = {
   'acc-shoulder-bag': { type:'svg', slot:'accessory', svg:`<rect x="184" y="248" width="48" height="60" rx="6" fill="#c4a882"/><path d="M196,248 Q196,230 208,230 Q220,230 220,248" fill="none" stroke="#b09070" stroke-width="3.5"/><rect x="198" y="266" width="22" height="14" rx="3" fill="#b09070"/><circle cx="209" cy="273" r="4" fill="#c4a882"/><line x1="184" y1="248" x2="174" y2="230" stroke="#b09070" stroke-width="2"/>` },
   'acc-chain':        { type:'svg', slot:'accessory', svg:`<path d="M94,178 Q130,204 166,178" fill="none" stroke="#c4a882" stroke-width="3.5"/><circle cx="130" cy="202" r="9" fill="#c4a882"/><circle cx="130" cy="202" r="5" fill="#e8ddd0"/><circle cx="110" cy="192" r="2.5" fill="#c4a882"/><circle cx="150" cy="192" r="2.5" fill="#c4a882"/>` },
   'acc-scarf':        { type:'svg', slot:'accessory', svg:`<path d="M88,170 Q130,158 172,170" fill="none" stroke="#e8c4bc" stroke-width="14" stroke-linecap="round"/><path d="M88,170 Q130,158 172,170" fill="none" stroke="#d4a898" stroke-width="2" stroke-dasharray="5,4"/><path d="M168,166 L178,200 L172,196 L175,212" stroke="#e8c4bc" stroke-width="10" stroke-linecap="round" fill="none"/>` },
-  'acc-belt':         { type:'svg', slot:'accessory', svg:`<rect x="90" y="292" width="80" height="9" rx="4" fill="#1c1c1e"/><rect x="120" y="288" width="20" height="17" rx="3" fill="#c4a882"/><rect x="124" y="292" width="12" height="9" rx="2" fill="#1c1c1e"/>` },
+  'acc-belt':         { type:'svg', slot:'accessory', svg:`<rect x="90" y="344" width="80" height="9" rx="4" fill="#1c1c1e"/><rect x="120" y="340" width="20" height="17" rx="3" fill="#c4a882"/><rect x="124" y="344" width="12" height="9" rx="2" fill="#1c1c1e"/>` },
 };
 
-// ── Default SVG content per slot (bare body) ──────────────────
-const defaultSVG = {
-  hat:       '',
-  top:       `<path d="M98,194 Q76,202 70,220 L66,244 L86,250 L88,292 L172,292 L174,250 L194,244 L190,220 Q184,202 162,194 Q148,202 130,202 Q112,202 98,194 Z" fill="url(#clothG)"/><path d="M114,194 Q130,206 146,194" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>`,
-  bottom:    `<path d="M94,292 Q86,292 84,300 L80,474 L84,478 L112,478 L116,374 L122,374 L126,478 L142,478 L146,374 L152,374 L156,478 L176,478 L180,474 L176,300 Q174,292 166,292 Z" fill="url(#clothG)"/><rect x="92" y="285" width="76" height="10" rx="5" fill="url(#clothB)"/>`,
-  shoes:     `<rect x="82" y="480" width="40" height="20" rx="10" fill="#f2f0ec"/><rect x="82" y="480" width="40" height="11" rx="5" fill="#e8e4de"/><rect x="84" y="489" width="36" height="11" rx="5" fill="#ffffff"/><rect x="138" y="480" width="40" height="20" rx="10" fill="#f2f0ec"/><rect x="138" y="480" width="40" height="11" rx="5" fill="#e8e4de"/><rect x="140" y="489" width="36" height="11" rx="5" fill="#ffffff"/>`,
-  accessory: '',
-};
+// ─────────────────────────────────────────────────────────────────
 
-// ── Apply / remove ────────────────────────────────────────────
-function applyItem(slot, id) {
-  const def      = items[id];
-  if (!def) return;
+const ghost = document.getElementById('drag-ghost');
+const dollRoot = document.getElementById('dress-doll-root');
+const stage = document.getElementById('character-stage');
+const overlay = document.getElementById('placed-clothing-overlay');
 
-  const svgLayer = document.getElementById(`layer-${slot}-svg`);
-  const pngLayer = document.getElementById(`layer-${slot}-png`);
+const DRAG_KIND_PALETTE = 'palette';
+const DRAG_KIND_BOARD = 'board';
 
-  if (outfit[slot] === id) {
-    // Toggle off — restore default
-    outfit[slot] = null;
-    if (svgLayer) svgLayer.innerHTML = defaultSVG[slot] || '';
-    if (pngLayer) pngLayer.innerHTML = '';
-    document.querySelectorAll(`.item[data-slot="${slot}"]`).forEach(el => el.classList.remove('selected'));
-  } else {
-    outfit[slot] = id;
+/** Scale factor for bottoms when placed on the board (thumbnail → model). */
+const BOTTOM_PLACE_SCALE_MIN = 1.8;
+const BOTTOM_PLACE_SCALE_MAX = 2.2;
 
-    if (def.type === 'png') {
-      if (svgLayer) svgLayer.innerHTML = '';   // hide default SVG shape
-      if (pngLayer) {
-        const img = document.createElement('img');
-        img.src = def.png;
-        img.alt = id;
-        pngLayer.innerHTML = '';
-        pngLayer.appendChild(img);
-      }
+/** Palette: offset from thumbnail/visual top-left → pointer (stable anchoring including scaled bottoms). */
+let grabPalette = { x: 0, y: 0 };
+let paletteDragItemId = null;
+
+/** Board sticker: offset from sticker top-left while moving a placed item. */
+let grabSticker = { x: 0, y: 0 };
+/** Set during sticker dragstart; used on drop — reference to .placed-drag-item */
+let draggedBoardStickerEl = null;
+
+function ptInsideRect(clientX, clientY, r) {
+  return (
+    clientX >= r.left && clientX <= r.right &&
+    clientY >= r.top && clientY <= r.bottom
+  );
+}
+
+/** Clone the visible preview from the palette card (thumbnail size unchanged after release). */
+function placeAtDrop(dropEvent, itemId) {
+  if (!itemId || !items[itemId] || !dollRoot || !overlay) return false;
+
+  const sourceEl = document.querySelector(`.item[data-id="${itemId}"]`);
+  if (!sourceEl) return false;
+
+  const dz = dollRoot.getBoundingClientRect();
+  if (!ptInsideRect(dropEvent.clientX, dropEvent.clientY, dz)) return false;
+
+  const thumb = sourceEl.querySelector('.item-thumb');
+  const sv = sourceEl.querySelector('svg');
+  const visual = thumb || sv;
+  if (!visual) return false;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'placed-drag-item';
+  wrap.dataset.sourceId = itemId;
+
+  const vr = visual.getBoundingClientRect();
+  const def = items[itemId];
+  const isBottom = def && def.slot === 'bottom';
+  const placeScale = isBottom
+    ? BOTTOM_PLACE_SCALE_MIN + Math.random() * (BOTTOM_PLACE_SCALE_MAX - BOTTOM_PLACE_SCALE_MIN)
+    : 1;
+
+  const dropX = dropEvent.clientX - dz.left;
+  const dropY = dropEvent.clientY - dz.top;
+
+  if (isBottom) {
+    wrap.classList.add('placed-drag-item--bottom');
+    wrap.dataset.placedScale = placeScale.toFixed(3);
+    const inner = document.createElement('div');
+    inner.className = 'placed-drag-item-scale';
+    inner.style.width = `${vr.width}px`;
+    inner.style.height = `${vr.height}px`;
+    inner.style.transformOrigin = '0 0';
+    inner.style.transform = `scale(${placeScale})`;
+
+    if (thumb) {
+      const img = thumb.cloneNode(true);
+      img.className = '';
+      img.alt = '';
+      inner.appendChild(img);
     } else {
-      if (pngLayer) pngLayer.innerHTML = '';   // clear any previous PNG
-      if (svgLayer) svgLayer.innerHTML = def.svg || '';
+      inner.appendChild(sv.cloneNode(true));
     }
+    wrap.appendChild(inner);
 
-    document.querySelectorAll(`.item[data-slot="${slot}"]`).forEach(el => {
-      el.classList.toggle('selected', el.dataset.id === id);
-    });
+    wrap.style.width = `${vr.width * placeScale}px`;
+    wrap.style.height = `${vr.height * placeScale}px`;
+    wrap.style.left = `${dropX - grabPalette.x * placeScale}px`;
+    wrap.style.top = `${dropY - grabPalette.y * placeScale}px`;
+  } else {
+    wrap.style.width = `${vr.width}px`;
+    wrap.style.height = `${vr.height}px`;
+    wrap.style.left = `${dropX - grabPalette.x}px`;
+    wrap.style.top = `${dropY - grabPalette.y}px`;
+
+    if (thumb) {
+      const img = thumb.cloneNode(true);
+      img.className = '';
+      img.alt = '';
+      wrap.appendChild(img);
+    } else {
+      wrap.appendChild(sv.cloneNode(true));
+    }
   }
+
+  overlay.appendChild(wrap);
+  prepareStickerElement(wrap);
+  return true;
+}
+
+/** Transparent sticker layer: draggable, no clipping; images don't steal drag from wrapper. */
+function prepareStickerElement(wrap) {
+  wrap.setAttribute('draggable', 'true');
+  wrap.querySelectorAll('img,svg').forEach(el => el.setAttribute('draggable', 'false'));
 }
 
 function resetAll() {
-  Object.keys(outfit).forEach(slot => {
-    outfit[slot] = null;
-    const svgLayer = document.getElementById(`layer-${slot}-svg`);
-    const pngLayer = document.getElementById(`layer-${slot}-png`);
-    if (svgLayer) svgLayer.innerHTML = defaultSVG[slot] || '';
-    if (pngLayer) pngLayer.innerHTML = '';
-  });
-  document.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+  if (overlay) overlay.innerHTML = '';
 }
-
-function randomize() {
-  resetAll();
-  ['hat', 'top', 'bottom', 'shoes', 'accessory'].forEach(slot => {
-    const els = document.querySelectorAll(`.item[data-slot="${slot}"]`);
-    if (!els.length) return;
-    if (Math.random() < 0.82) {
-      const pick = els[Math.floor(Math.random() * els.length)];
-      applyItem(slot, pick.dataset.id);
-    }
-  });
-}
-
-// ── Drag & Drop ───────────────────────────────────────────────
-const ghost = document.getElementById('drag-ghost');
-const stage = document.getElementById('character-stage') || document.querySelector('.wardrobe');
-let dragData = null;
 
 document.querySelectorAll('.item').forEach(item => {
   item.addEventListener('dragstart', e => {
-    dragData = { slot: item.dataset.slot, id: item.dataset.id };
+    draggedBoardStickerEl = null;
+    paletteDragItemId = item.dataset.id;
 
     const thumb = item.querySelector('.item-thumb');
     const svg = item.querySelector('svg');
+    const grabVisual = thumb || svg;
+    if (!grabVisual) return;
+    const vrect = grabVisual.getBoundingClientRect();
+    grabPalette.x = e.clientX - vrect.left;
+    grabPalette.y = e.clientY - vrect.top;
+
     const nameEl = item.querySelector('.item-name');
     const label = nameEl ? nameEl.textContent : '';
 
@@ -138,38 +181,94 @@ document.querySelectorAll('.item').forEach(item => {
       }
     }
     e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('text/plain', item.dataset.id);
+    e.dataTransfer.setData('application/x-drag-kind', DRAG_KIND_PALETTE);
     requestAnimationFrame(() => item.classList.add('dragging'));
   });
 
   item.addEventListener('dragend', () => {
     item.classList.remove('dragging');
     if (ghost) ghost.style.display = 'none';
-    dragData = null;
+    paletteDragItemId = null;
+    grabPalette.x = grabPalette.y = 0;
     if (stage) stage.classList.remove('drag-over');
   });
-
-  item.addEventListener('click', () => applyItem(item.dataset.slot, item.dataset.id));
 });
 
-if (stage) {
-  stage.addEventListener('dragover', e => {
-    if (!dragData) return;
+function repositionStickerOnBoard(dropEvent, wrap) {
+  if (!wrap || !dollRoot) return false;
+  const dz = dollRoot.getBoundingClientRect();
+  if (!ptInsideRect(dropEvent.clientX, dropEvent.clientY, dz)) return false;
+  const lx = dropEvent.clientX - dz.left - grabSticker.x;
+  const ly = dropEvent.clientY - dz.top - grabSticker.y;
+  wrap.style.left = `${lx}px`;
+  wrap.style.top = `${ly}px`;
+  return true;
+}
+
+/** Delegated: dragging already-placed stickers (HTML5 draggable on #placed-clothing-overlay). */
+if (overlay) {
+  overlay.addEventListener('dragstart', (e) => {
+    const wrap = e.target.closest('.placed-drag-item');
+    if (!wrap || !overlay.contains(wrap)) return;
+    draggedBoardStickerEl = wrap;
+    const box = wrap.getBoundingClientRect();
+    grabSticker.x = e.clientX - box.left;
+    grabSticker.y = e.clientY - box.top;
+    e.stopPropagation();
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/x-drag-kind', DRAG_KIND_BOARD);
+    wrap.classList.add('sticker-moving');
+  });
+
+  overlay.addEventListener('dragend', (e) => {
+    const wrap = e.target.closest('.placed-drag-item');
+    if (wrap) wrap.classList.remove('sticker-moving');
+    draggedBoardStickerEl = null;
+    grabSticker.x = grabSticker.y = 0;
+    if (stage) stage.classList.remove('drag-over');
+  });
+}
+
+if (stage && dollRoot) {
+  stage.addEventListener('dragover', (e) => {
+    const hasPaletteDrag = !!paletteDragItemId;
+    const hasStickerDrag = !!draggedBoardStickerEl;
+    if (!hasPaletteDrag && !hasStickerDrag) return;
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    stage.classList.add('drag-over');
+    e.dataTransfer.dropEffect = hasStickerDrag ? 'move' : 'copy';
+    const doll = dollRoot.getBoundingClientRect();
+    if (ptInsideRect(e.clientX, e.clientY, doll)) stage.classList.add('drag-over');
+    else stage.classList.remove('drag-over');
   });
 
   stage.addEventListener('dragleave', e => {
-    if (!stage.contains(e.relatedTarget)) stage.classList.remove('drag-over');
+    if (stage.contains(e.relatedTarget)) return;
+    stage.classList.remove('drag-over');
   });
 
-  stage.addEventListener('drop', e => {
+  stage.addEventListener('drop', (e) => {
     e.preventDefault();
     stage.classList.remove('drag-over');
-    if (!dragData) return;
-    applyItem(dragData.slot, dragData.id);
-    stage.classList.add('drop-flash');
-    setTimeout(() => stage.classList.remove('drop-flash'), 400);
+
+    /* Drop fires before dragend — ref from board sticker drag is still valid. */
+    const stickerEl = draggedBoardStickerEl;
+    if (stickerEl && overlay && overlay.contains(stickerEl)) {
+      const ok = repositionStickerOnBoard(e, stickerEl);
+      if (ok) {
+        stage.classList.add('drop-flash');
+        setTimeout(() => stage.classList.remove('drop-flash'), 400);
+      }
+      return;
+    }
+
+    const id = e.dataTransfer.getData('text/plain') || paletteDragItemId;
+    if (!id || !items[id]) return;
+    const ok = placeAtDrop(e, id);
+    if (ok) {
+      stage.classList.add('drop-flash');
+      setTimeout(() => stage.classList.remove('drop-flash'), 400);
+    }
   });
 }
 
